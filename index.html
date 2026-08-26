@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>A/B Audio Toggle</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #232323; color: #d6d6d6;
+    font-family: "Segoe UI", sans-serif; font-size: 12px;
+    user-select: none;
+  }
+  body { display: flex; flex-direction: column; padding: 10px; box-sizing: border-box; gap: 8px; }
+  #seqName { color: #8a8a8a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #trackList {
+    flex: 0 1 auto; overflow-y: auto; border: 1px solid #3a3a3a;
+    border-radius: 4px; padding: 4px; background: #1d1d1d;
+  }
+  #trackList label {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 6px; border-radius: 3px; cursor: pointer;
+  }
+  #trackList label:hover { background: #2e2e2e; }
+  .state { margin-left: auto; font-size: 11px; color: #6dbf6d; }
+  .state.muted { color: #e0655a; }
+  .muted-name { color: #777; }
+  button {
+    background: #3a3a3a; color: #d6d6d6; border: 1px solid #4a4a4a;
+    border-radius: 4px; padding: 6px 10px; cursor: pointer; font-size: 12px;
+  }
+  button:hover { background: #454545; }
+  button:active { background: #2a2a2a; }
+  #toggleBtn {
+    flex: 1 0 auto; min-height: 90px; font-size: 20px; font-weight: 600;
+    background: #2d5a9e; border-color: #3d6ab0;
+  }
+  #toggleBtn:hover { background: #35679f; }
+  #toggleBtn:active { background: #244a80; }
+  #toggleBtn:disabled { background: #3a3a3a; color: #777; cursor: default; }
+  .row { display: flex; gap: 6px; }
+  .row button { flex: 1; }
+  #msg { color: #e0a95a; min-height: 14px; }
+  .muted-hint { color: #6a6a6a; padding: 6px; }
+</style>
+</head>
+<body>
+  <div id="seqName">&nbsp;</div>
+  <div id="trackList"><div class="muted-hint">Loading...</div></div>
+  <div class="row">
+    <button id="refreshBtn" title="Re-read tracks from the active sequence">Refresh</button>
+    <button id="unmuteBtn" title="Unmute every audio track">Unmute All</button>
+  </div>
+  <button id="toggleBtn" title="Flip mute on all checked tracks (Space/Enter when focused)">TOGGLE A/B</button>
+  <div id="msg"></div>
+  <script src="./js/main.js"></script>
+</body>
+</html>
