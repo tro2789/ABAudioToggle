@@ -29,6 +29,16 @@ shared environment gotchas):
   button re-syncs.
 - `setMute()` is not on the undo stack (mute is sequence state, not an edit).
 
+## Release
+
+Same pipeline as SequenceBatchExporter (see its CLAUDE.md for full detail):
+bump both versions in `CSXS/manifest.xml` → `.\build.ps1` (signs with the
+shared TOP cert, auto-copied from `SequenceBatchExporter\cert` — that folder
+is still the cert's backup home) → commit + tag on **Gitea** (origin/source of
+truth; push mirror on-commit + 8h carries to GitHub, never push GitHub
+directly) → GitHub release on the mirrored tag with the `.zxp` attached.
+v1.0.0 shipped 2026-08-26: https://github.com/tro2789/ABAudioToggle/releases
+
 ## Dev loop
 
 `.\install.ps1` (ASCII-only, PS 5.1) → restart Premiere → Window > Extensions >
