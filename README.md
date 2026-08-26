@@ -1,72 +1,94 @@
 # A/B Audio Toggle
 
-CEP panel for Premiere Pro: check some audio tracks, press one big button, and
-every checked track flips its mute state. Set up chain A unmuted and chain B
-muted once, and each press swaps which one you hear — instant A/B comparison
-of processed vs. unprocessed audio without touching the timeline.
+[![Latest release](https://img.shields.io/github/v/release/tro2789/ABAudioToggle)](https://github.com/tro2789/ABAudioToggle/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/tro2789/ABAudioToggle/total)](https://github.com/tro2789/ABAudioToggle/releases)
+[![License: MIT](https://img.shields.io/github/license/tro2789/ABAudioToggle)](LICENSE)
+![Platform: Windows](https://img.shields.io/badge/platform-Windows-0078d4)
+![Premiere Pro 22.0+](https://img.shields.io/badge/Premiere%20Pro-22.0%2B-9999ff)
+[![Buy me a coffee](https://img.shields.io/badge/%E2%98%95%20buy%20me%20a%20coffee-tip-ffdd00)](https://buy.stripe.com/5kQ6oH5Lybfs2BI091bwk0d)
 
-## Install (users)
+A/B Audio Toggle is a CEP panel for Adobe Premiere Pro. You select audio
+tracks in the panel. You push one button. The panel changes the mute state
+of each selected track. Use the panel to compare two audio chains, for
+example an unprocessed voice track and a processed voice track.
 
-Download the signed `.zxp` from the
-[latest release](https://github.com/tro2789/ABAudioToggle/releases/latest)
-and open it with [ZXPInstaller](https://zxpinstaller.com). Restart Premiere →
-**Window > Extensions > A/B Audio Toggle**. Windows, Premiere Pro 22.0+.
+## Install the panel (users)
 
-## Install (development)
+1. Download the `.zxp` file from the
+   [latest release](https://github.com/tro2789/ABAudioToggle/releases/latest).
+2. Open the file with [ZXPInstaller](https://zxpinstaller.com).
+3. Restart Premiere Pro.
+4. Open the panel: **Window > Extensions > A/B Audio Toggle**.
+
+The panel operates on Windows with Premiere Pro 22.0 or later.
+
+## Install the panel (development)
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
-Copies the working tree to `%APPDATA%\Adobe\CEP\extensions` as an unsigned
-panel and sets `PlayerDebugMode=1` under `HKCU\Software\Adobe\CSXS.11/.12`.
-Re-run after any code change, then restart Premiere.
+The script copies the files to `%APPDATA%\Adobe\CEP\extensions`. The script
+sets `PlayerDebugMode` to `1` under `HKCU\Software\Adobe\CSXS.11/.12`. Run
+the script again after each code change. Then restart Premiere Pro.
 
-## Usage
+## Use the panel
 
-1. Check the audio tracks you want in the A/B group. Each track shows its live
-   mute state (LIVE / MUTED). Selection is remembered per sequence.
-2. Set your starting point (e.g. mute the processed track, leave the raw one
-   live) — in the panel via **TOGGLE A/B** or directly in the timeline, then
-   **Refresh**.
-3. Press **TOGGLE A/B** (Space/Enter works while it has focus) — every checked
-   track flips its mute state, swapping which chain is audible. Works during
-   playback.
-4. **Unmute All** resets every audio track to unmuted.
+1. Open a sequence. The panel shows each audio track with its mute state
+   (LIVE or MUTED).
+2. Set a check mark on each track that you want in the A/B group. The panel
+   keeps the selection for each sequence.
+3. Set the start condition. Mute the tracks of chain B. Keep the tracks of
+   chain A live. Use the **TOGGLE A/B** button or the track mute buttons in
+   the timeline. If you use the timeline, push **Refresh**.
+4. Push **TOGGLE A/B**. The mute state of each selected track changes. You
+   now hear the other chain. The button operates during playback.
+5. Push **TOGGLE A/B** again to go back to the first chain.
 
 Notes:
 
-- Track mute is not clip mute: it silences the whole track and saves with the
-  project. Use Unmute All before exporting if you left a B-chain muted.
-- The panel re-reads track states when it regains focus; if you change mutes in
-  the timeline while working, hit Refresh to re-sync.
+- Track mute is not clip mute. Track mute makes the full track silent.
+  Premiere Pro keeps the mute state in the project file.
+- Push **Unmute All** to remove the mute state from all audio tracks. Do
+  this before an export if a muted chain must be in the mix.
+- The panel reads the track states again when the panel gets focus. Push
+  **Refresh** to read the states again at all other times.
 
-## Distribution (signed .zxp)
+## Build the release file
 
 ```powershell
 .\build.ps1
 ```
 
-Produces `dist\ABAudioToggle-v<version>.zxp`, signed and timestamped as
-**Trevor O'Hare Productions** (same cert as the other panels; copied from
-`SequenceBatchExporter\cert` on first run, gitignored). Users install it with
-[ZXPInstaller](https://zxpinstaller.com) — no PlayerDebugMode / registry edits.
+The script makes the file `dist\ABAudioToggle-v<version>.zxp`. The script
+signs the file with the **Trevor O'Hare Productions** certificate and adds a
+timestamp. The certificate is not in git. The script copies the certificate
+from `SequenceBatchExporter\cert` if the local copy is not present.
 
-Bump `ExtensionBundleVersion` and the extension `Version` in
-`CSXS/manifest.xml` for each release; build.ps1 names the .zxp from it.
+Increase the two version values in `CSXS/manifest.xml` before each release.
+The script names the `.zxp` file from the manifest version.
 
-## Repos and releases
+## Repositories and releases
 
-- **Source of truth:** `https://gitea.tohareprod.com/tro2789/ABAudioToggle`
-  (private). Always push here — commits and tags auto-mirror to GitHub.
-- **Public mirror + releases:** `https://github.com/tro2789/ABAudioToggle`.
-  Never push to GitHub directly. Releases are created on GitHub with the signed
-  `.zxp` attached.
+- **Source of truth:** the private Gitea. Push all commits and tags there.
+  A push mirror sends them to GitHub (on each commit, and each 8 hours).
+- **Public mirror and releases:**
+  `https://github.com/tro2789/ABAudioToggle`. Do not push to GitHub
+  directly. Make each release on GitHub and attach the signed `.zxp` file.
 
 ## Files
 
-- `CSXS/manifest.xml` — CEP manifest (PPRO 22–99, CSXS 9+)
-- `jsx/host.jsx` — ExtendScript: `isMuted()` / `setMute()` over `audioTracks`
-- `index.html` / `js/main.js` — panel UI and logic
-- `install.ps1` — dev install: copy to `%APPDATA%\Adobe\CEP\extensions` + debug-mode keys
-- `build.ps1` — signed `.zxp` release build (see Distribution)
+- `CSXS/manifest.xml` — the CEP manifest (PPRO 22–99, CSXS 9+)
+- `jsx/host.jsx` — ExtendScript: `isMuted()` and `setMute()` on `audioTracks`
+- `index.html`, `js/main.js` — the panel UI and logic
+- `install.ps1` — the development install script
+- `build.ps1` — the signed `.zxp` release build
+
+## Support
+
+A/B Audio Toggle is free and stays free. If the panel helps you, you can
+[buy me a coffee](https://buy.stripe.com/5kQ6oH5Lybfs2BI091bwk0d).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
