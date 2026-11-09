@@ -21,6 +21,14 @@ shared environment gotchas):
   API surface: `audioTracks[i].isMuted()` / `.setMute(0|1)` — standard DOM,
   no QE.
 
+- **Update check** — `js/update-check.js`, configured by `data-repo` and
+  `data-url` on its script tag. Once a day it compares
+  `ExtensionBundleVersion` (read from `CSXS/manifest.xml`) with the latest
+  GitHub release tag and shows a dismissible notice that opens the Gumroad
+  listing. The same file is copied into SBE, Spec Check and A/B Toggle; keep the
+  copies identical. A release is only "out" once the GitHub release exists,
+  so tag names must stay `v<version>`.
+
 ## Behaviors worth knowing
 
 - Track mute ≠ clip mute: muting a track silences everything on it, and mute

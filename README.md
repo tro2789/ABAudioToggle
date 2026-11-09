@@ -84,6 +84,14 @@ The script names the `.zxp` file from the manifest version.
 - `install.ps1` — the development install script
 - `build.ps1` — the signed `.zxp` release build
 
+## Update check
+
+When the panel opens, it checks for a new version one time each day. It sends
+one request to the GitHub API (`api.github.com/repos/tro2789/ABAudioToggle/releases/latest`).
+GitHub can see your IP address. The panel sends no other data. If a new
+version is available, a notice shows at the top of the panel. Click the notice
+to open the download page. Click the x to hide the notice until the next version.
+
 ## Support
 
 A/B Audio Toggle is free and stays free. If the panel helps you, you can
