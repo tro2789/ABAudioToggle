@@ -18,14 +18,44 @@
   var store = {};          // { [seqId]: [trackIndex, ...] }
   var current = null;      // last snapshot from ABT_getTracks
 
+  // Selections live in a file under the roaming profile. CEP keeps
+  // localStorage in %TEMP%\cep_cache, keyed by Premiere version, so Temp
+  // cleanup and every Premiere upgrade wipe it; it stays as a fallback.
+  // window.cep.fs is CEP's built-in file API (this panel has no Node).
+  function stateFile() {
+    try {
+      var base = window.__adobe_cep__.getSystemPath("userData");
+      if (!base || !window.cep || !window.cep.fs) return null;
+      base = decodeURIComponent(String(base).replace(/^file:\/\/\/?/, ""));
+      return { dir: base + "/com.tohare.abaudiotoggle", file: base + "/com.tohare.abaudiotoggle/state.json" };
+    } catch (e) { return null; }
+  }
+  function writeStateFile(json) {
+    var f = stateFile();
+    if (!f) return;
+    window.cep.fs.makedir(f.dir);
+    window.cep.fs.writeFile(f.file, json);
+  }
   function load() {
-    try { store = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
-    catch (e) { store = {}; }
+    var f = stateFile();
+    if (f) {
+      var r = window.cep.fs.readFile(f.file);
+      if (r.err === 0) {
+        try { store = JSON.parse(r.data) || {}; return; } catch (e) { /* fall through */ }
+      }
+    }
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      store = JSON.parse(raw) || {};
+      if (raw) writeStateFile(raw); // one-time migration out of cep_cache
+    } catch (e) { store = {}; }
   }
   function save() {
     if (!current || current.err) return;
     store[current.seqId] = checkedIndices();
-    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    var json = JSON.stringify(store);
+    writeStateFile(json);
+    try { localStorage.setItem(STORE_KEY, json); } catch (e) { /* cache only */ }
   }
   function checkedIndices() {
     var out = [];

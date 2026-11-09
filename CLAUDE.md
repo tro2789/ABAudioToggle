@@ -9,9 +9,13 @@ muted once and each press swaps which chain you hear.
 Same two-runtime shape as SequenceBatchExporter (see its CLAUDE.md for the
 shared environment gotchas):
 
-- **Panel** — `index.html` + `js/main.js`. Checked-track selection persists in
-  `localStorage` (`abt_state_v1`) keyed by `sequenceID`, so each sequence
-  keeps its own A/B setup. No Node needed; manifest has no CEFCommandLine.
+- **Panel** — `index.html` + `js/main.js`. Checked-track selection is keyed
+  by `sequenceID`, so each sequence keeps its own A/B setup. Since v1.0.1 it is
+  written to `%APPDATA%\com.tohare.abaudiotoggle\state.json` through CEP's
+  built-in `window.cep.fs`, mirrored to `localStorage` (`abt_state_v1`) as a
+  fallback and migrated from it once. localStorage alone lost the data on
+  every Premiere upgrade (cep_cache is keyed by host version). No Node needed;
+  manifest has no CEFCommandLine.
 - **ExtendScript host** — `jsx/host.jsx`, functions prefixed `ABT_`
   (ExtendScript engine is shared with other panels). Hand-built JSON returns.
   API surface: `audioTracks[i].isMuted()` / `.setMute(0|1)` — standard DOM,
